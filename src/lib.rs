@@ -23,6 +23,15 @@ use crate::ksy::{
 #[allow(clippy::derivable_impls)]
 pub mod ksy;
 
+pub fn generate(typetree: &TypeTreeNode) -> KsySchema {
+    Context::default().generate(typetree)
+}
+
+pub fn generate_yaml(typetree: &TypeTreeNode) -> Result<String, serde_yaml_ng::Error> {
+    let schema = Context::default().generate(typetree);
+    serde_yaml_ng::to_string(&schema)
+}
+
 #[derive(Eq)]
 struct TypeOnlyHash<'a>(&'a TypeTreeNode);
 
@@ -145,8 +154,8 @@ impl<'a> Context<'a> {
             Kind::Char => "u1".into(),
             Kind::Untyped => self.add_array_type(tt),
             Kind::Empty => todo!(),
-            Kind::Array => self.add_array_type(&tt.children[0]),
-            Kind::ArrayInner => self.add_array_type(tt),
+            Kind::ArrayWrapper => self.add_array_type(&tt.children[0]),
+            Kind::Array => self.add_array_type(tt),
             Kind::String => self.add_string_type(tt),
             Kind::Map | Kind::Struct => self.add_type(tt),
             Kind::TodoReferenced => todo!(),
