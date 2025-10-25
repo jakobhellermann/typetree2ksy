@@ -9,7 +9,9 @@ fn main() -> Result<()> {
     let tpk = TpkTypeTreeBlob::embedded();
     let version = tpk.versions.last().unwrap();
 
-    let tt = tpk.get_typetree_node(ClassId::Camera, version).unwrap();
+    let tt = tpk.get_typetree_node(ClassId::Material, version).unwrap();
+    println!("{}", tt.dump());
+
     let cx = typetree2ksy::Context::default();
     let ksy = cx.generate(&tt);
     let ksy_yaml = serde_yaml_ng::to_string(&ksy)?;

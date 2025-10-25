@@ -143,13 +143,12 @@ impl<'a> Context<'a> {
             Kind::Float => "f4".into(),
             Kind::Double => "f8".into(),
             Kind::Char => "u1".into(),
-            Kind::Map => todo!(),
-            Kind::Untyped => todo!(),
+            Kind::Untyped => self.add_array_type(tt),
             Kind::Empty => todo!(),
             Kind::Array => self.add_array_type(&tt.children[0]),
             Kind::ArrayInner => self.add_array_type(tt),
             Kind::String => self.add_string_type(tt),
-            Kind::Struct => self.add_type(tt),
+            Kind::Map | Kind::Struct => self.add_type(tt),
             Kind::TodoReferenced => todo!(),
             Kind::TodoType => todo!(),
         };
@@ -247,10 +246,28 @@ impl<'a> Context<'a> {
 
 fn name_to_identifier(name: &str) -> String {
     name.to_ascii_lowercase()
-        .replace(['<', ' '], "_")
-        .replace('>', "")
+        .replace(['<', '[', ' '], "_")
+        .replace(['>', ']'], "")
+        .replace("(int&)", "")
 }
 
 fn default<T: Default>() -> T {
     T::default()
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::name_to_identifier;
+
+    #[test]
+    fn name_to_identifier_values() {
+        assert_eq!(name_to_identifier("m_GameObject"), "m_gameobject");
+        assert_eq!(name_to_identifier("PPtr<Material>"), "pptr_material");
+        assert_eq!(name_to_identifier("with space"), "with_space");
+        assert_eq!(name_to_identifier("data[0][1]"), "data_0_1");
+        assert_eq!(
+            name_to_identifier("(int&)m_layerblendingmode"),
+            "m_layerblendingmode"
+        );
+    }
 }
