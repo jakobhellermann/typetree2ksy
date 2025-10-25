@@ -9,7 +9,7 @@ use katai::ksy::{
     KsySchema, KsySchemaMeta, StringOrInteger, TypeRef, TypeSpec, TypesSpec, TypesSpecKey,
 };
 use rabex::typetree::TypetreeNodeKind as Kind;
-use rabex::{objects::ClassId, tpk::TpkTypeTreeBlob, typetree::TypeTreeNode};
+use rabex::{tpk::TpkTypeTreeBlob, typetree::TypeTreeNode};
 use rustc_hash::{FxHashMap, FxHashSet};
 
 fn default<T: Default>() -> T {
@@ -17,31 +17,34 @@ fn default<T: Default>() -> T {
 }
 
 fn main() -> Result<()> {
-    let mut args = std::env::args().skip(1);
-    let version = args.next();
     let tpk = TpkTypeTreeBlob::embedded();
 
-    let version = version
-        .map(|v| v.parse())
-        .transpose()?
-        .unwrap_or(tpk.versions.last().unwrap().clone());
-    let tt = tpk
-        .get_typetree_node(ClassId::GameObject, &version)
-        .unwrap();
-    println!("{}", tt.dump());
+    let mut types: Vec<_> = tpk
+        .class_information
+        .iter()
+        .filter_map(|(class_id, versions)| {
+            let unity_class = versions.last()?.1.as_ref()?;
+            let tt = tpk.get_typetree_node_for_class(unity_class, false)?;
+            Some((class_id, tt))
+        })
+        .collect();
+    types.sort_by(|a, b| a.0.cmp(b.0));
 
-    let cx = Context::default();
-    let ksy = cx.generate(&tt);
-    let ksy_yaml = serde_yaml_ng::to_string(&ksy)?;
-    println!("{}", ksy_yaml);
+    for (class_id, tt) in types {
+        println!("{class_id:?}");
 
-    let out_dir = Path::new("schemas");
-    std::fs::create_dir_all(out_dir)?;
-    std::fs::write(
-        out_dir.join(tt.m_Type).with_added_extension("ksy"),
-        ksy_yaml,
-    )?;
-    println!("---");
+        let cx = Context::default();
+        let ksy = cx.generate(&tt);
+        let ksy_yaml = serde_yaml_ng::to_string(&ksy)?;
+        println!("{}", ksy_yaml);
+
+        let out_dir = Path::new("schemas");
+        std::fs::create_dir_all(out_dir)?;
+        std::fs::write(
+            out_dir.join(tt.m_Type).with_added_extension("ksy"),
+            ksy_yaml,
+        )?;
+    }
     Ok(())
 }
 
