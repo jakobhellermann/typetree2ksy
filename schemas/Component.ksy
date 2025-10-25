@@ -1,7 +1,7 @@
 meta:
   bit-endian: le
   endian: le
-  id: game_object
+  id: component
 seq:
 - id: m_gameobject
   type: pptr_gameobject

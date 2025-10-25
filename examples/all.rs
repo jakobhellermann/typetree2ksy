@@ -4,6 +4,8 @@ use anyhow::Result;
 use rabex::tpk::TpkTypeTreeBlob;
 
 fn main() -> Result<()> {
+    tracing_subscriber::fmt().without_time().init();
+
     let tpk = TpkTypeTreeBlob::embedded();
 
     let mut types: Vec<_> = tpk
@@ -18,12 +20,11 @@ fn main() -> Result<()> {
     types.sort_by(|a, b| a.0.cmp(b.0));
 
     for (class_id, tt) in types {
-        println!("{class_id:?}");
+        tracing::info!("{class_id:?}");
 
         let cx = typetree2ksy::Context::default();
         let ksy = cx.generate(&tt);
         let ksy_yaml = serde_yaml_ng::to_string(&ksy)?;
-        println!("{}", ksy_yaml);
 
         let out_dir = Path::new("schemas");
         std::fs::create_dir_all(out_dir)?;

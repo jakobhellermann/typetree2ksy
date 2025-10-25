@@ -1,7 +1,7 @@
 meta:
   bit-endian: le
   endian: le
-  id: game_object
+  id: audiomanager
 seq:
 - id: m_volume
   type: f4
@@ -25,7 +25,7 @@ seq:
 - id: m_spatializerplugin
   type: string
 - id: m_ambisonicdecoderplugin
-  type: string_d1
+  type: string
 - id: m_disableaudio
   type: b1
 - id: m_virtualizeeffects
@@ -37,17 +37,6 @@ seq:
   type: s4
 types:
   string:
-    seq:
-    - id: size
-      type: s4
-    - encoding: UTF-8
-      id: data
-      size: size
-      type: str
-    - id: align4
-      if: (_io.pos % 4) != 0
-      size: (4 - (_io.pos % 4) % 4)
-  string_d1:
     seq:
     - id: size
       type: s4

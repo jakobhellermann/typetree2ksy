@@ -1,7 +1,7 @@
 meta:
   bit-endian: le
   endian: le
-  id: game_object
+  id: physics2dsettings
 seq:
 - id: m_gravity
   type: vector2f

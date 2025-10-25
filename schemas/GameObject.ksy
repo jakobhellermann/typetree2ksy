@@ -1,7 +1,7 @@
 meta:
   bit-endian: le
   endian: le
-  id: game_object
+  id: gameobject
 seq:
 - id: m_component
   type: array

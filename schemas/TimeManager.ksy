@@ -1,7 +1,7 @@
 meta:
   bit-endian: le
   endian: le
-  id: game_object
+  id: timemanager
 seq:
 - id: fixed_timestep
   type: rationaltime

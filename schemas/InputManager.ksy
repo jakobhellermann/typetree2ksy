@@ -1,7 +1,7 @@
 meta:
   bit-endian: le
   endian: le
-  id: game_object
+  id: inputmanager
 seq:
 - id: m_axes
   type: array
@@ -22,88 +22,22 @@ types:
     - id: align4
       if: (_io.pos % 4) != 0
       size: (4 - (_io.pos % 4) % 4)
-  string_d1:
-    seq:
-    - id: size
-      type: s4
-    - encoding: UTF-8
-      id: data
-      size: size
-      type: str
-    - id: align4
-      if: (_io.pos % 4) != 0
-      size: (4 - (_io.pos % 4) % 4)
-  string_d2:
-    seq:
-    - id: size
-      type: s4
-    - encoding: UTF-8
-      id: data
-      size: size
-      type: str
-    - id: align4
-      if: (_io.pos % 4) != 0
-      size: (4 - (_io.pos % 4) % 4)
-  string_d3:
-    seq:
-    - id: size
-      type: s4
-    - encoding: UTF-8
-      id: data
-      size: size
-      type: str
-    - id: align4
-      if: (_io.pos % 4) != 0
-      size: (4 - (_io.pos % 4) % 4)
-  string_d4:
-    seq:
-    - id: size
-      type: s4
-    - encoding: UTF-8
-      id: data
-      size: size
-      type: str
-    - id: align4
-      if: (_io.pos % 4) != 0
-      size: (4 - (_io.pos % 4) % 4)
-  string_d5:
-    seq:
-    - id: size
-      type: s4
-    - encoding: UTF-8
-      id: data
-      size: size
-      type: str
-    - id: align4
-      if: (_io.pos % 4) != 0
-      size: (4 - (_io.pos % 4) % 4)
-  string_d6:
-    seq:
-    - id: size
-      type: s4
-    - encoding: UTF-8
-      id: data
-      size: size
-      type: str
-    - id: align4
-      if: (_io.pos % 4) != 0
-      size: (4 - (_io.pos % 4) % 4)
   inputaxis:
     seq:
     - id: m_name
       type: string
     - id: descriptivename
-      type: string_d1
+      type: string
     - id: descriptivenegativename
-      type: string_d2
+      type: string
     - id: negativebutton
-      type: string_d3
+      type: string
     - id: positivebutton
-      type: string_d4
+      type: string
     - id: altnegativebutton
-      type: string_d5
+      type: string
     - id: altpositivebutton
-      type: string_d6
+      type: string
     - id: gravity
       type: f4
     - id: dead
