@@ -1,4 +1,5 @@
 use std::collections::hash_map::Entry;
+use std::hash::Hash;
 use std::path::Path;
 
 use anyhow::{Context as _, Result};
@@ -44,9 +45,19 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+#[derive(Eq, PartialEq)]
+struct IgnorePositionTTHash<'a>(&'a TypeTreeNode);
+impl Hash for IgnorePositionTTHash<'_> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.0.m_Type.hash(state);
+        self.0.m_Name.hash(state);
+        self.0.children.hash(state);
+    }
+}
+
 #[derive(Default)]
 struct Context<'a> {
-    type_names: FxHashMap<&'a TypeTreeNode, String>,
+    type_names: FxHashMap<IgnorePositionTTHash<'a>, String>,
     used_type_names: FxHashSet<String>,
 
     types: IndexMap<TypesSpecKey, TypeSpec>,
@@ -188,7 +199,7 @@ impl<'a> Context<'a> {
     fn defer_type_spec(&mut self, tt: &'a TypeTreeNode, spec: TypeSpec) -> TypeRef {
         let type_ref = self.get_next_type_name(tt);
 
-        let type_ref = match self.type_names.entry(tt) {
+        let type_ref = match self.type_names.entry(IgnorePositionTTHash(tt)) {
             Entry::Occupied(_) => todo!(),
             Entry::Vacant(vacant_entry) => vacant_entry.insert(type_ref).clone(),
         };
