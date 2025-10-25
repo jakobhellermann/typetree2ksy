@@ -69,16 +69,25 @@ impl<'a> Context<'a> {
                 ..default()
             });
             if child.requires_align() {
-                attributes.push(Attribute {
-                    id: Some("align4".parse().unwrap()),
-                    size: Some(StringOrInteger::String("(4 - (_io.pos % 4) % 4)".into())),
-                    if_: Some(AttributeIf::String("(_io.pos % 4) != 0".into())),
-                    ..default()
-                });
+                attributes.push(Context::align4_attribute());
             }
         }
 
         Attributes(attributes)
+    }
+
+    fn align4_attribute() -> Attribute {
+        Self::align_attribute(4)
+    }
+    fn align_attribute(align: usize) -> Attribute {
+        Attribute {
+            id: Some("align4".parse().unwrap()),
+            size: Some(StringOrInteger::String(format!(
+                "({align} - (_io.pos % {align}) % {align})"
+            ))),
+            if_: Some(AttributeIf::String(format!("(_io.pos % {align}) != 0"))),
+            ..default()
+        }
     }
 
     fn type_ref(&mut self, tt: &'a TypeTreeNode) -> TypeRef {
@@ -100,7 +109,8 @@ impl<'a> Context<'a> {
             Kind::Empty => todo!(),
             Kind::Array => self.defer_type_array(&tt.children[0]),
             Kind::ArrayInner => self.defer_type_array(tt),
-            Kind::String | Kind::Struct => self.defer_type(tt),
+            Kind::String => self.defer_type_string(tt),
+            Kind::Struct => self.defer_type(tt),
             Kind::TodoReferenced => todo!(),
             Kind::TodoType => todo!(),
         }
@@ -110,6 +120,29 @@ impl<'a> Context<'a> {
         identifier.parse().context(identifier).unwrap()
     }
 
+    fn defer_type_string(&mut self, tt: &'a TypeTreeNode) -> TypeRef {
+        let size_name = "size";
+        let attributes = vec![
+            Attribute {
+                id: Some(size_name.parse().unwrap()),
+                type_: Some(AttributeType::TypeRef("s4".into())),
+                ..default()
+            },
+            Attribute {
+                id: Some("data".parse().unwrap()),
+                type_: Some(AttributeType::TypeRef("str".into())),
+                encoding: Some(katai::ksy::CharacterEncoding::Utf8),
+                size: Some(StringOrInteger::String(size_name.into())),
+                ..default()
+            },
+            Context::align4_attribute(),
+        ];
+        let spec = TypeSpec {
+            seq: Some(Attributes(attributes)),
+            ..default()
+        };
+        self.defer_type_spec(tt, spec)
+    }
     fn defer_type_array(&mut self, tt: &'a TypeTreeNode) -> TypeRef {
         let [len_ty, item_ty] = tt.children.as_slice() else {
             unreachable!()
