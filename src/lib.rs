@@ -2,7 +2,7 @@ use anyhow::Context as _;
 use indexmap::IndexMap;
 use rabex::typetree::TypeTreeNode;
 use rabex::typetree::TypetreeNodeKind as Kind;
-use rustc_hash::{FxHashMap, FxHashSet};
+use rustc_hash::FxHashMap;
 
 use std::collections::hash_map::Entry;
 use std::hash::Hash;
@@ -37,7 +37,7 @@ impl Hash for IgnorePositionTTHash<'_> {
 #[derive(Default)]
 pub struct Context<'a> {
     type_names: FxHashMap<IgnorePositionTTHash<'a>, String>,
-    used_type_names: FxHashSet<String>,
+    used_type_names: FxHashMap<String, usize>,
 
     types: IndexMap<TypesSpecKey, TypeSpec>,
 }
@@ -167,12 +167,20 @@ impl<'a> Context<'a> {
     }
 
     fn get_next_type_name(&mut self, tt: &TypeTreeNode) -> TypeRef {
-        let mut candidate = name_to_identifier(&tt.m_Type);
-        while self.used_type_names.contains(&candidate) {
-            candidate.push_str("_disambig");
+        let candidate = name_to_identifier(&tt.m_Type);
+        if let Some(count) = self.used_type_names.get_mut(&candidate) {
+            *count += 1;
+            let disambiguated = format!("{candidate}_d{count}");
+            assert!(
+                self.used_type_names
+                    .insert(disambiguated.clone(), 0)
+                    .is_none()
+            );
+            disambiguated
+        } else {
+            self.used_type_names.insert(candidate.clone(), 0);
+            candidate
         }
-        assert!(self.used_type_names.insert(candidate.clone()));
-        candidate
     }
 
     fn defer_type_spec(&mut self, tt: &'a TypeTreeNode, spec: TypeSpec) -> TypeRef {

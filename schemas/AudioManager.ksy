@@ -25,7 +25,7 @@ seq:
 - id: m_spatializerplugin
   type: string
 - id: m_ambisonicdecoderplugin
-  type: string_disambig
+  type: string_d1
 - id: m_disableaudio
   type: b1
 - id: m_virtualizeeffects
@@ -47,7 +47,7 @@ types:
     - id: align4
       if: (_io.pos % 4) != 0
       size: (4 - (_io.pos % 4) % 4)
-  string_disambig:
+  string_d1:
     seq:
     - id: size
       type: s4

@@ -22,7 +22,7 @@ types:
     - id: align4
       if: (_io.pos % 4) != 0
       size: (4 - (_io.pos % 4) % 4)
-  string_disambig:
+  string_d1:
     seq:
     - id: size
       type: s4
@@ -33,7 +33,7 @@ types:
     - id: align4
       if: (_io.pos % 4) != 0
       size: (4 - (_io.pos % 4) % 4)
-  string_disambig_disambig:
+  string_d2:
     seq:
     - id: size
       type: s4
@@ -44,7 +44,7 @@ types:
     - id: align4
       if: (_io.pos % 4) != 0
       size: (4 - (_io.pos % 4) % 4)
-  string_disambig_disambig_disambig:
+  string_d3:
     seq:
     - id: size
       type: s4
@@ -55,7 +55,7 @@ types:
     - id: align4
       if: (_io.pos % 4) != 0
       size: (4 - (_io.pos % 4) % 4)
-  string_disambig_disambig_disambig_disambig:
+  string_d4:
     seq:
     - id: size
       type: s4
@@ -66,7 +66,7 @@ types:
     - id: align4
       if: (_io.pos % 4) != 0
       size: (4 - (_io.pos % 4) % 4)
-  string_disambig_disambig_disambig_disambig_disambig:
+  string_d5:
     seq:
     - id: size
       type: s4
@@ -77,7 +77,7 @@ types:
     - id: align4
       if: (_io.pos % 4) != 0
       size: (4 - (_io.pos % 4) % 4)
-  string_disambig_disambig_disambig_disambig_disambig_disambig:
+  string_d6:
     seq:
     - id: size
       type: s4
@@ -93,17 +93,17 @@ types:
     - id: m_name
       type: string
     - id: descriptivename
-      type: string_disambig
+      type: string_d1
     - id: descriptivenegativename
-      type: string_disambig_disambig
+      type: string_d2
     - id: negativebutton
-      type: string_disambig_disambig_disambig
+      type: string_d3
     - id: positivebutton
-      type: string_disambig_disambig_disambig_disambig
+      type: string_d4
     - id: altnegativebutton
-      type: string_disambig_disambig_disambig_disambig_disambig
+      type: string_d5
     - id: altpositivebutton
-      type: string_disambig_disambig_disambig_disambig_disambig_disambig
+      type: string_d6
     - id: gravity
       type: f4
     - id: dead

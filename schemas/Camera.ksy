@@ -40,9 +40,9 @@ seq:
 - id: m_anamorphism
   type: f4
 - id: m_sensorsize
-  type: vector2f_disambig
+  type: vector2f_d1
 - id: m_lensshift
-  type: vector2f_disambig_disambig
+  type: vector2f_d2
 - id: m_normalizedviewportrect
   type: rectf
 - id: near_clip_plane
@@ -110,13 +110,13 @@ types:
       type: f4
     - id: y
       type: f4
-  vector2f_disambig:
+  vector2f_d1:
     seq:
     - id: x
       type: f4
     - id: y
       type: f4
-  vector2f_disambig_disambig:
+  vector2f_d2:
     seq:
     - id: x
       type: f4
