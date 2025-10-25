@@ -4,7 +4,14 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+anyhow = "1.0"
 indexmap = { version = "2.12", features = ["serde"] }
+rabex = { git = "https://github.com/jakobhellermann/RustyAssetBundleEXtractor", branch = "all", default-features = false, features = [ "embed-tpk" ] }
 regress = "0.10"
+rustc-hash = "2.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+serde_yaml_ng = "0.10"
+
+[patch."https://github.com/jakobhellermann/RustyAssetBundleEXtractor"]
+rabex = { path = "../../unity/RustyAssetBundleEXtractor" }
